@@ -242,9 +242,10 @@ pub struct UpdateAdmin<'info> {
     #[account(mut)]
     pub new_admin: Signer<'info>,
 }
-
 #[derive(Accounts)]
 pub struct InitializeVault<'info> {
+    #[account(mut, seeds = [b"admin_config"], bump)]
+    pub admin_config: Account<'info, AdminConfig>,
     #[account(
         init,
         payer = admin,
@@ -253,13 +254,14 @@ pub struct InitializeVault<'info> {
         bump
     )]
     pub vault_data: Account<'info, VaultData>,
-    #[account(seeds = [b"admin_config"], bump)]
-    pub admin_config: Account<'info, AdminConfig>,
     /// CHECK: This is safe because we're using it as a PDA for vault
-    #[account(seeds = [b"vault"], bump)]
+    #[account(
+        seeds = [b"vault"],
+        bump
+    )]
     pub vault: AccountInfo<'info>,
     #[account(mut)]
-    pub admin: Signer<'info>,
+    pub admin: Signer<'info>, 
     pub system_program: Program<'info, System>,
 }
 
