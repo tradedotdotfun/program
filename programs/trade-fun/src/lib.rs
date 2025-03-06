@@ -127,17 +127,24 @@ pub mod trade_fun {
     pub fn deposit_sol(ctx: Context<DepositSol>, amount: u64) -> Result<()> {
         let vault_data = &ctx.accounts.vault_data;
         require!(vault_data.is_running, VaultError::LeagueNotRunning);
-
+    
         let transfer_instruction = Transfer {
             from: ctx.accounts.user.to_account_info(),
             to: ctx.accounts.vault.to_account_info(),
         };
-
+    
         transfer(
             CpiContext::new(ctx.accounts.system_program.to_account_info(), transfer_instruction),
             amount,
         )?;
-
+    
+        emit!(DepositEvent {
+            user: ctx.accounts.user.key(),
+            amount,
+            timestamp: Clock::get()?.unix_timestamp,
+        });
+    
+    
         Ok(())
     }
 
@@ -307,4 +314,12 @@ pub struct DistributeSol<'info> {
     #[account(mut, seeds = [b"vault_data"], bump)]
     pub vault_data: Account<'info, VaultData>,
     pub system_program: Program<'info, System>,
+}
+
+
+#[event]
+pub struct DepositEvent {
+    pub user: Pubkey,
+    pub amount: u64,
+    pub timestamp: i64,
 }
