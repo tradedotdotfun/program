@@ -1,3 +1,7 @@
+Here’s an updated **README** including the **TypeScript scripts** you created today for interacting with your Solana program.  
+
+---
+
 # 🏆 Trade.fun
 
 ## 📌 Overview
@@ -18,7 +22,8 @@ This is a **Solana program written in Rust** using the **Anchor framework**.
 ✅ **Dynamic Reward Distribution** – SOL is split among winners based on preset ratios.  
 ✅ **Admin-Controlled Fees** – The admin collects a fee from the vault.  
 ✅ **Upgradeable Vault Settings** – The admin can change **reward ratios & fees** anytime.  
-✅ **Fully Tested** – Includes **comprehensive unit tests** in TypeScript.
+✅ **Fully Tested** – Includes **comprehensive unit tests** in TypeScript.  
+✅ **TypeScript CLI Scripts** – Easily interact with the program using scripts.  
 
 ---
 
@@ -78,40 +83,71 @@ anchor deploy
 
 ## ⚡ Usage
 
-### **Initialize Admin**
+### **📜 TypeScript Scripts for Interacting with the Program**
+We've created **TypeScript CLI scripts** that allow you to call program methods from your **local wallet**.
+
+### **1️⃣ Install Dependencies**
+Before running the scripts, make sure you have **Node.js**, **TypeScript**, and **Anchor dependencies** installed:
+
 ```sh
-anchor test --filter "Admin initializes"
+npm install @solana/web3.js @coral-xyz/anchor ts-node
 ```
 
-### **Initialize Vault**
-```sh
-anchor test --filter "Vault Initialized"
-```
+---
 
-### **Start a New Round**
+### **2️⃣ Initialize Admin**
+**Admin must be set up before using the vault.**
 ```sh
-anchor test --filter "Starts the league round"
+ts-node scripts/initializeAdmin.ts
 ```
+✅ **Sets the admin for managing the vault.**
 
-### **Deposit SOL**
-```sh
-anchor test --filter "User deposits 0.1 SOL"
-```
+---
 
-### **End the Round & Collect Fees**
+### **3️⃣ Initialize Vault**
+**The vault must be initialized before a round starts.**
 ```sh
-anchor test --filter "Ends the league round"
+ts-node scripts/initializeVault.ts
 ```
+✅ **Creates the vault, sets reward ratios, and defines the platform fee.**  
 
-### **Distribute Rewards**
-```sh
-anchor test --filter "Distributes remaining SOL"
-```
+---
 
-### **Update Vault Settings (Admin Only)**
+### **4️⃣ Start a New Round**
+**Users can deposit SOL only when a round is active.**
 ```sh
-anchor test --filter "Admin updates vault settings"
+ts-node scripts/startRound.ts
 ```
+✅ **Marks the vault as active for deposits.**
+
+---
+
+### **5️⃣ Deposit SOL**
+**Users deposit SOL while the round is active.**
+```sh
+ts-node scripts/depositSol.ts
+```
+✅ **Deposits 1 SOL into the vault.**  
+🛠️ **Modify the script if you want to deposit a different amount.**
+
+---
+
+### **6️⃣ End the Round & Collect Fees**
+**Stops new deposits and collects platform fees.**
+```sh
+ts-node scripts/endRound.ts
+```
+✅ **Ends the round and collects platform fees from the vault.**
+
+---
+
+### **7️⃣ Distribute Rewards**
+**Rewards are distributed to winners.**
+```sh
+ts-node scripts/distributeSol.ts
+```
+✅ **Distributes SOL to predefined winners.**  
+💰 **Modify the script if you want to distribute SOL to yourself.**  
 
 ---
 
@@ -128,18 +164,85 @@ pub fn initialize_vault(
 ✔️ Only **admin** can initialize.  
 ✔️ **Checks sum of reward_ratios + fee = 100%**.  
 
+---
+
 ### **Depositing SOL**
 ```rust
-pub fn deposit_sol(ctx: Context<DepositSol>, amount: u64) -> Result<()> { ... }
+pub fn deposit_sol(ctx: Context<DepositSol>) -> Result<()> { ... }
 ```
 ✔️ **Only allowed if round is active**.  
 
-### **Updating Vault Settings**
+---
+
+### **Ending a Round & Collecting Fees**
 ```rust
-pub fn update_vault_settings(
-    ctx: Context<UpdateVaultSettings>,
-    new_reward_ratios: Vec<u64>,
-    new_platform_fee: u64,
-) -> Result<()> { ... }
+pub fn end_round(ctx: Context<EndRound>) -> Result<()> { ... }
 ```
-✔️ **Admin can update reward ratios & platform fee dynamically**.  
+✔️ **Admin stops deposits & collects platform fees.**  
+
+---
+
+### **Distributing Rewards**
+```rust
+pub fn distribute_sol(ctx: Context<DistributeSol>) -> Result<()> { ... }
+```
+✔️ **Distributes SOL dynamically based on reward ratios.**  
+✔️ **Supports distributing SOL to yourself.**  
+
+---
+
+## 🛠️ Development & Testing
+
+### **Run Local Tests**
+```sh
+anchor test
+```
+
+### **Filter Specific Tests**
+Run tests for a specific function:
+```sh
+anchor test --filter "User deposits 0.1 SOL"
+```
+
+---
+
+## 📜 **Checking Account Balances**
+After transactions, you can check balances:
+
+### **Check Your Wallet Balance**
+```sh
+solana balance
+```
+
+### **Check Vault Balance**
+```sh
+solana account <VAULT_PDA>
+```
+
+---
+
+## 📡 **Verifying Transactions**
+To confirm any transaction:
+```sh
+solana confirm -v <TRANSACTION_SIGNATURE>
+```
+
+---
+
+## 🛠️ **Troubleshooting**
+### **"Command not found: ts-node"**
+Run:
+```sh
+npm install -g ts-node
+```
+Or use:
+```sh
+npx ts-node scripts/<your-script>.ts
+```
+
+### **Vault Doesn’t Have Enough SOL**
+Make sure the vault is funded before distribution:
+```sh
+solana balance <VAULT_PDA>
+```
+
