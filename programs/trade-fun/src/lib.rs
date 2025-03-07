@@ -124,9 +124,11 @@ pub mod trade_fun {
     }
 
     /// Deposit SOL into the vault (Only allowed if the league is running)
-    pub fn deposit_sol(ctx: Context<DepositSol>, amount: u64) -> Result<()> {
+    pub fn deposit_sol(ctx: Context<DepositSol>) -> Result<()> {
         let vault_data = &ctx.accounts.vault_data;
         require!(vault_data.is_running, VaultError::LeagueNotRunning);
+    
+        
     
         let transfer_instruction = Transfer {
             from: ctx.accounts.user.to_account_info(),
@@ -135,12 +137,17 @@ pub mod trade_fun {
     
         transfer(
             CpiContext::new(ctx.accounts.system_program.to_account_info(), transfer_instruction),
-            amount,
+            100_000_000
         )?;
+
+        msg!(
+            "Emitting DepositEvent: user={}, timestamp={}",
+            ctx.accounts.user.key(),
+            Clock::get()?.unix_timestamp
+        );
     
         emit!(DepositEvent {
             user: ctx.accounts.user.key(),
-            amount,
             timestamp: Clock::get()?.unix_timestamp,
         });
     
@@ -320,6 +327,5 @@ pub struct DistributeSol<'info> {
 #[event]
 pub struct DepositEvent {
     pub user: Pubkey,
-    pub amount: u64,
     pub timestamp: i64,
 }
