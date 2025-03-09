@@ -157,7 +157,7 @@ We are integrating **zk-compression** to provide an **on-chain, verifiable** way
 ### 💰 **JitoSOL Staking to Generate Passive Rewards**
 User deposits will be automatically **staked in JitoSOL**, allowing them to earn **yield** while participating in trading competitions. The staking rewards will be distributed to participants.
 
-### 🎯 **Yield-Based Betting with Locked JitoSOL**
+### 🪽 **Angel Mode: Yield-Based Betting with Locked JitoSOL**
 We are introducing a **new trading mode** where users can **bet using only the yield** generated from their staked JitoSOL instead of their principal SOL. Here's how it works:
 - Users **stake SOL in JitoSOL**, locking it for a predefined period.
 - The **yield generated** from the staked SOL can be used for betting.
