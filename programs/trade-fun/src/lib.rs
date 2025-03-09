@@ -7,7 +7,6 @@ declare_id!("GVh92ct6ouJXFjxx7rvPXGidjWhKJVtnBjTkywhpCuA");
 pub mod trade_fun {
     use super::*;
 
-    /// Initialize the admin account (Only called once)
     pub fn initialize_admin(ctx: Context<InitializeAdmin>) -> Result<()> {
         let admin_config = &mut ctx.accounts.admin_config;
         admin_config.admin = *ctx.accounts.admin.key;
@@ -15,7 +14,6 @@ pub mod trade_fun {
         Ok(())
     }
 
-    /// Update the admin (Only current admin can update)
     pub fn update_admin(ctx: Context<UpdateAdmin>) -> Result<()> {
         let admin_config = &mut ctx.accounts.admin_config;
         require!(
@@ -28,7 +26,6 @@ pub mod trade_fun {
         Ok(())
     }
 
-    /// Initialize the vault (Only admin can call)
     pub fn initialize_vault(
         ctx: Context<InitializeVault>,
         reward_ratios: Vec<u64>,
@@ -83,7 +80,6 @@ pub mod trade_fun {
         Ok(())
     }
 
-    /// Start a new league round (Only admin)
     pub fn start_round(ctx: Context<ManageRound>) -> Result<()> {
         let vault_data = &mut ctx.accounts.vault_data;
         require!(vault_data.owner == *ctx.accounts.admin.key, VaultError::Unauthorized);
@@ -93,7 +89,6 @@ pub mod trade_fun {
         Ok(())
     }
 
-    /// End the current league round (Only admin)
     pub fn end_round(ctx: Context<EndRound>) -> Result<()> {
         let vault_data = &mut ctx.accounts.vault_data;
         require!(vault_data.owner == *ctx.accounts.admin.key, VaultError::Unauthorized);
@@ -123,7 +118,6 @@ pub mod trade_fun {
         Ok(())
     }
 
-    /// Deposit SOL into the vault (Only allowed if the league is running)
     pub fn deposit_sol(ctx: Context<DepositSol>) -> Result<()> {
         let vault_data = &ctx.accounts.vault_data;
         require!(vault_data.is_running, VaultError::LeagueNotRunning);
@@ -155,7 +149,6 @@ pub mod trade_fun {
         Ok(())
     }
 
-    /// Distribute SOL dynamically based on preset ratios (Only admin)
     pub fn distribute_sol<'info>(ctx: Context<'_, '_, '_, 'info, DistributeSol<'info>>) -> Result<()> {
         let vault_data = &ctx.accounts.vault_data;
         require!(vault_data.owner == *ctx.accounts.admin.key, VaultError::Unauthorized);
@@ -191,7 +184,6 @@ pub mod trade_fun {
     }
 }
 
-/// Admin account (Stores the current admin)
 #[account]
 pub struct AdminConfig {
     pub admin: Pubkey,
@@ -231,7 +223,6 @@ pub struct UpdateVaultSettings<'info> {
     pub admin: Signer<'info>,
 }
 
-/// Account Structures
 #[derive(Accounts)]
 pub struct InitializeAdmin<'info> {
     #[account(
