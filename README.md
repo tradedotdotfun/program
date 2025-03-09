@@ -12,17 +12,6 @@ Built on Solana using the **Anchor framework**, Trade.fun makes paper trading co
 
 ---
 
-## 🔥 Features
-✅ **Admin-Managed Vault** – Only the admin can create & manage competitions.  
-✅ **Deposits Only When Active** – Users can deposit SOL only when a round is running.  
-✅ **Dynamic Reward Distribution** – SOL is split among winners based on preset ratios.  
-✅ **Admin-Controlled Fees** – Admin collects a platform fee from the vault.  
-✅ **Upgradeable Vault Settings** – Admin can adjust **reward ratios & fees** anytime.  
-✅ **Fully Tested** – Comprehensive unit tests in TypeScript.  
-✅ **TypeScript CLI Scripts** – Easily interact with the program using scripts.  
-
----
-
 ## 🛠️ How It Works
 
 ### 🔑 **Roles**
