@@ -1,28 +1,24 @@
-Here’s an updated **README** including the **TypeScript scripts** you created today for interacting with your Solana program.  
-
----
-
 # 🏆 Trade.fun
 
 ## 📌 Overview
-**Trade.fun** is a **paper trading competition smart contract** on Solana that allows users to:
-- Participate in a simulated **trading competition**.
-- Deposit **SOL** into a **vault** while a round is running.
-- Distribute rewards based on **predefined reward ratios**.
-- Charge a **platform fee** that is collected by the admin.
-- Support **dynamic updates** to platform fees and reward distributions.
+Welcome to **Trade.fun**, a **paper trading competition smart contract** on Solana! Our goal is to provide a fun and competitive environment where users can:
+- **Participate** in simulated trading competitions.
+- **Deposit SOL** into a vault during active rounds.
+- **Win rewards** distributed based on a predefined ratio.
+- **Collect platform fees** as an admin.
+- **Update reward distributions & fees** dynamically.
 
-This is a **Solana program written in Rust** using the **Anchor framework**.
+Built on Solana using the **Anchor framework**, Trade.fun makes paper trading competitive, transparent, and rewarding.
 
 ---
 
 ## 🔥 Features
 ✅ **Admin-Managed Vault** – Only the admin can create & manage competitions.  
-✅ **Deposits Only When Active** – Users can deposit SOL only when the round is active.  
+✅ **Deposits Only When Active** – Users can deposit SOL only when a round is running.  
 ✅ **Dynamic Reward Distribution** – SOL is split among winners based on preset ratios.  
-✅ **Admin-Controlled Fees** – The admin collects a fee from the vault.  
-✅ **Upgradeable Vault Settings** – The admin can change **reward ratios & fees** anytime.  
-✅ **Fully Tested** – Includes **comprehensive unit tests** in TypeScript.  
+✅ **Admin-Controlled Fees** – Admin collects a platform fee from the vault.  
+✅ **Upgradeable Vault Settings** – Admin can adjust **reward ratios & fees** anytime.  
+✅ **Fully Tested** – Comprehensive unit tests in TypeScript.  
 ✅ **TypeScript CLI Scripts** – Easily interact with the program using scripts.  
 
 ---
@@ -30,34 +26,33 @@ This is a **Solana program written in Rust** using the **Anchor framework**.
 ## 🛠️ How It Works
 
 ### 🔑 **Roles**
-- **Admin**: The owner of the vault (stored in an **AdminConfig PDA**) who manages competitions.
-- **Users**: Participants who deposit SOL into the vault.
+- **Admin**: Manages the vault and competitions.
+- **Users**: Participate by depositing SOL during active rounds.
 
 ### 📂 **Main Accounts**
 | Account       | PDA Seed         | Purpose |
 |--------------|----------------|----------|
-| `AdminConfig` | `admin_config` | Stores the **admin's public key** |
-| `VaultData`   | `vault_data` | Stores **reward settings & competition status** |
-| `Vault`       | `vault` | The **SOL storage account** for deposits & rewards |
+| `AdminConfig` | `admin_config` | Stores admin details |
+| `VaultData`   | `vault_data` | Holds reward settings & round status |
+| `Vault`       | `vault` | Stores SOL for deposits & rewards |
 
 ### 🔄 **Lifecycle**
 1. **Admin initializes** the vault.
 2. **Admin starts** a new round.
-3. **Users deposit SOL** while the round is active.
-4. **Admin ends** the round, collecting the platform fee.
-5. **Admin distributes rewards** among winners.
+3. **Users deposit SOL** during the round.
+4. **Admin ends** the round and collects the platform fee.
+5. **Admin distributes rewards** to winners.
 
 ---
 
 ## 🚀 Setup & Installation
 
 ### **1️⃣ Install Dependencies**
-Ensure you have:
-- **Rust & Solana CLI** installed:  
+- Install **Rust & Solana CLI**:  
   ```sh
   curl -sSf https://raw.githubusercontent.com/solana-labs/solana/v1.16.2/install | sh
   ```
-- **Anchor framework** installed:  
+- Install **Anchor framework**:  
   ```sh
   cargo install --git https://github.com/coral-xyz/anchor avm --locked
   avm install latest
@@ -81,73 +76,53 @@ anchor deploy
 
 ---
 
-## ⚡ Usage
+## ⚡ Using Trade.fun
 
-### **📜 TypeScript Scripts for Interacting with the Program**
-We've created **TypeScript CLI scripts** that allow you to call program methods from your **local wallet**.
+### **📜 TypeScript CLI Scripts**
+We've included **TypeScript scripts** to easily interact with the program.
 
 ### **1️⃣ Install Dependencies**
-Before running the scripts, make sure you have **Node.js**, **TypeScript**, and **Anchor dependencies** installed:
-
 ```sh
 npm install @solana/web3.js @coral-xyz/anchor ts-node
 ```
 
----
-
 ### **2️⃣ Initialize Admin**
-**Admin must be set up before using the vault.**
 ```sh
 ts-node scripts/initializeAdmin.ts
 ```
-✅ **Sets the admin for managing the vault.**
-
----
+✅ **Registers the admin for managing the vault.**
 
 ### **3️⃣ Initialize Vault**
-**The vault must be initialized before a round starts.**
 ```sh
 ts-node scripts/initializeVault.ts
 ```
-✅ **Creates the vault, sets reward ratios, and defines the platform fee.**  
-
----
+✅ **Creates the vault and sets reward ratios & platform fee.**
 
 ### **4️⃣ Start a New Round**
-**Users can deposit SOL only when a round is active.**
 ```sh
 ts-node scripts/startRound.ts
 ```
-✅ **Marks the vault as active for deposits.**
-
----
+✅ **Activates the vault for deposits.**
 
 ### **5️⃣ Deposit SOL**
-**Users deposit SOL while the round is active.**
 ```sh
 ts-node scripts/depositSol.ts
 ```
 ✅ **Deposits 1 SOL into the vault.**  
-🛠️ **Modify the script if you want to deposit a different amount.**
-
----
+🛠️ **Modify the script to deposit a different amount.**
 
 ### **6️⃣ End the Round & Collect Fees**
-**Stops new deposits and collects platform fees.**
 ```sh
 ts-node scripts/endRound.ts
 ```
-✅ **Ends the round and collects platform fees from the vault.**
-
----
+✅ **Stops deposits and collects platform fees.**
 
 ### **7️⃣ Distribute Rewards**
-**Rewards are distributed to winners.**
 ```sh
 ts-node scripts/distributeSol.ts
 ```
-✅ **Distributes SOL to predefined winners.**  
-💰 **Modify the script if you want to distribute SOL to yourself.**  
+✅ **Rewards winners based on preset ratios.**  
+💰 **Modify the script if you want to distribute SOL differently.**
 
 ---
 
@@ -161,88 +136,200 @@ pub fn initialize_vault(
     platform_fee: u64,
 ) -> Result<()> { ... }
 ```
-✔️ Only **admin** can initialize.  
-✔️ **Checks sum of reward_ratios + fee = 100%**.  
-
----
+✔️ **Only admin** can initialize.  
+✔️ **Ensures reward ratios + fee = 100%**.  
 
 ### **Depositing SOL**
 ```rust
 pub fn deposit_sol(ctx: Context<DepositSol>) -> Result<()> { ... }
 ```
-✔️ **Only allowed if round is active**.  
-
----
+✔️ **Only possible when a round is active.**
 
 ### **Ending a Round & Collecting Fees**
 ```rust
 pub fn end_round(ctx: Context<EndRound>) -> Result<()> { ... }
 ```
-✔️ **Admin stops deposits & collects platform fees.**  
-
----
+✔️ **Stops deposits & collects platform fees.**
 
 ### **Distributing Rewards**
 ```rust
 pub fn distribute_sol(ctx: Context<DistributeSol>) -> Result<()> { ... }
 ```
-✔️ **Distributes SOL dynamically based on reward ratios.**  
-✔️ **Supports distributing SOL to yourself.**  
+✔️ **Rewards winners dynamically based on ratios.**  
+✔️ **Supports custom distributions.**
 
 ---
 
-## 🛠️ Development & Testing
+## 🌟 Upcoming Features
 
+### 🔐 **zk-Compression for Transparent Winner Selection**
+We are integrating **zk-compression** to provide an **on-chain, verifiable** way to determine winners, ensuring fairness and transparency.
+
+### 💰 **JitoSOL Staking to Generate Passive Rewards**
+User deposits will be automatically **staked in JitoSOL**, allowing them to earn **yield** while participating in trading competitions. The staking rewards will be distributed to participants.
+
+### 🎯 **Yield-Based Betting with Locked JitoSOL**
+We are introducing a **new trading mode** where users can **bet using only the yield** generated from their staked JitoSOL instead of their principal SOL. Here's how it works:
+- Users **stake SOL in JitoSOL**, locking it for a predefined period.
+- The **yield generated** from the staked SOL can be used for betting.
+- Users can participate in competitions **without risking their principal**.
+- Users can **use future yield** for betting **immediately** after locking their SOL, meaning they don’t have to wait for the yield to accumulate before placing bets.
+- The actual yield will **unlock over time**, ensuring continuous engagement in the platform.
+- After the locked period ends, users can **withdraw their original SOL** while keeping any additional rewards earned from yield-based bets.
+
+This feature enables **risk-free betting**, as users are only wagering the interest earned rather than their initial deposit, while also allowing **immediate betting** with future expected yield.
+
+### ⚔️ **1:1 PvP Trading Battles**
+Users can challenge each other to **head-to-head trading battles**, where both players deposit SOL, and the winner takes the pot minus platform fees.
+
+### 🏛️ **DAO-Driven Competitions & DAO vs. DAO Battles**
+Users will be able to **create DAOs** to compete against other communities, with custom reward structures and governance mechanisms.
+
+Additionally, we are introducing **DAO vs. DAO trading battles**, where decentralized communities can challenge each other in structured competitions. Each DAO will be able to:
+- Form teams and set strategic trading goals.
+- Compete against rival DAOs in time-based or performance-based trading battles.
+- Earn rewards based on collective performance and strategy.
+- Implement governance mechanisms to distribute winnings among DAO members.
+
+This feature will create a **collaborative and competitive ecosystem** where DAOs can engage in strategic trading, strengthening community engagement and participation.
+
+### 🔄 **Copy Trading with Real-World Perp Integration**
+We are bringing **real-world perpetual trading** into the platform by introducing **Copy Trading**, allowing users to **follow top traders' positions** automatically.  
+- This will be using the **Raydium Perp DEX** and **Drift DEX** programs on Solana.
+- Users can **subscribe to experienced traders** and mirror their trades in real-time.  
+- The system integrates **real-world perpetual contracts**, ensuring accurate position tracking.  
+- **Top traders can earn fees** from their followers, incentivizing high-performance trading strategies.  
+
+This feature allows both beginners and passive investors to participate in trading without needing deep market expertise while enabling skilled traders to **monetize their strategies**.
+
+### 🎟️ **Lottery System for Non-Winners**
+To keep participation exciting, users who don’t win in competitions will be **entered into a lottery**, giving them a second chance at earning rewards.
+
+### 🤖 **AI-Powered Trading Agents**
+Players will be able to **deploy AI trading agents** to compete in trading rounds. Users can either train their own AI or bet on AI agents with predefined strategies.
+
+---
+
+## 🏗️ Development & Testing
+### **Run Local Tests**
+## 🏗️ Development & Testing
 ### **Run Local Tests**
 ```sh
 anchor test
 ```
 
 ### **Filter Specific Tests**
-Run tests for a specific function:
 ```sh
 anchor test --filter "User deposits 0.1 SOL"
 ```
 
 ---
 
-## 📜 **Checking Account Balances**
-After transactions, you can check balances:
+## 🛡️ Security Considerations
+We are committed to ensuring:
+- **On-chain verifiable winner selection.**
+- **Smart contract audits** for robustness.
+- **User protection** with secure staking mechanisms.
 
-### **Check Your Wallet Balance**
+---
+
+## 💼 Contributing
+Want to help improve **Trade.fun**? We’d love your input!
+1. Fork the repository.
+2. Create a feature branch.
+3. Submit a pull request.
+
+For major contributions, open an issue first to discuss your ideas.
+
+---
+
+## 📡 Get in Touch
+📢 **Twitter**: [@TradeFun](https://twitter.com/TradeFun)  
+💬 **Discord**: [Join Our Community](https://discord.gg/tradefun)
+
+
+
+
+
+# 🏆 Trade.fun
+
+## 📌 Overview
+Welcome to **Trade.fun**, a **paper trading competition smart contract** on Solana! Our goal is to provide a fun and competitive environment where users can:
+- **Participate** in simulated trading competitions.
+- **Deposit SOL** into a vault during active rounds.
+- **Win rewards** distributed based on a predefined ratio.
+- **Collect platform fees** as an admin.
+- **Update reward distributions & fees** dynamically.
+
+Built on Solana using the **Anchor framework**, Trade.fun makes paper trading competitive, transparent, and rewarding.
+
+---
+
+## 🔥 Features
+✅ **Admin-Managed Vault** – Only the admin can create & manage competitions.  
+✅ **Deposits Only When Active** – Users can deposit SOL only when a round is running.  
+✅ **Dynamic Reward Distribution** – SOL is split among winners based on preset ratios.  
+✅ **Admin-Controlled Fees** – Admin collects a platform fee from the vault.  
+✅ **Upgradeable Vault Settings** – Admin can adjust **reward ratios & fees** anytime.  
+✅ **Fully Tested** – Comprehensive unit tests in TypeScript.  
+✅ **TypeScript CLI Scripts** – Easily interact with the program using scripts.  
+
+---
+
+## 🛠️ How It Works
+
+### 🔑 **Roles**
+- **Admin**: Manages the vault and competitions.
+- **Users**: Participate by depositing SOL during active rounds.
+
+### 📂 **Main Accounts**
+| Account       | PDA Seed         | Purpose |
+|--------------|----------------|----------|
+| `AdminConfig` | `admin_config` | Stores admin details |
+| `VaultData`   | `vault_data` | Holds reward settings & round status |
+| `Vault`       | `vault` | Stores SOL for deposits & rewards |
+
+### 🔄 **Lifecycle**
+1. **Admin initializes** the vault.
+2. **Admin starts** a new round.
+3. **Users deposit SOL** during the round.
+4. **Admin ends** the round and collects the platform fee.
+5. **Admin distributes rewards** to winners.
+
+---
+
+## 🏗️ Development & Testing
+### **Run Local Tests**
 ```sh
-solana balance
+anchor test
 ```
 
-### **Check Vault Balance**
+### **Filter Specific Tests**
 ```sh
-solana account <VAULT_PDA>
+anchor test --filter "User deposits 0.1 SOL"
 ```
 
 ---
 
-## 📡 **Verifying Transactions**
-To confirm any transaction:
-```sh
-solana confirm -v <TRANSACTION_SIGNATURE>
-```
+## 🛡️ Security Considerations
+We are committed to ensuring:
+- **On-chain verifiable winner selection.**
+- **Smart contract audits** for robustness.
+- **User protection** with secure staking mechanisms.
 
 ---
 
-## 🛠️ **Troubleshooting**
-### **"Command not found: ts-node"**
-Run:
-```sh
-npm install -g ts-node
-```
-Or use:
-```sh
-npx ts-node scripts/<your-script>.ts
-```
+## 💼 Contributing
+Want to help improve **Trade.fun**? We’d love your input!
+1. Fork the repository.
+2. Create a feature branch.
+3. Submit a pull request.
 
-### **Vault Doesn’t Have Enough SOL**
-Make sure the vault is funded before distribution:
-```sh
-solana balance <VAULT_PDA>
-```
+For major contributions, open an issue first to discuss your ideas.
+
+---
+
+## 📡 Get in Touch
+📢 **Twitter**: [@TradeFun](https://twitter.com/TradeFun)  
+💬 **Discord**: [Join Our Community](https://discord.gg/tradefun)
 
