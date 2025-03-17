@@ -28,7 +28,7 @@ export function loadWallet(): anchor.Wallet {
 }
 
 export async function loadProgram() {
-    const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+    const connection = new Connection("https://api.testnet.sonic.game/", "confirmed");
     const wallet = loadWallet();
     
     // Initialize the provider
