@@ -1,7 +1,7 @@
 # 🏆 Trade.fun
 
 ## 🚀 What is Trade.fun?
-Trade.fun is an **influencer-driven trading game** built on **Sonic**, designed to make trading competitions more **transparent, engaging, and rewarding**. Whether you're a seasoned trader or just starting out, **Trade.fun** offers an exciting way to showcase your skills, earn rewards, and build a trading community.
+Trade.fun is an **influencer-driven trading game** built on **SVM**, designed to make trading competitions more **transparent, engaging, and rewarding**. Whether you're a seasoned trader or just starting out, **Trade.fun** offers an exciting way to showcase your skills, earn rewards, and build a trading community.
 
 ### 🔥 Why Choose Trade.fun?
 - **Showcase & Monetize** → Influencers can prove their trading expertise and earn from it.
