@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::{transfer, Transfer};
 
-declare_id!("AFDcYebrecmbqxNNQa3jht8LkSjUDgCT5T3bV2ncagHG");
+declare_id!("ANE115teNkEVcqpKF7F9tiBYj89o5mXqhXgMBkNaBtbj");
 
 #[program]
 pub mod trade_fun {
@@ -83,16 +83,17 @@ pub mod trade_fun {
     pub fn start_round(ctx: Context<ManageRound>) -> Result<()> {
         let vault_data = &mut ctx.accounts.vault_data;
         require!(vault_data.owner == *ctx.accounts.admin.key, VaultError::Unauthorized);
-
+        let round_number = 1;
         vault_data.is_running = true;
-        msg!("League round started!");
+        msg!("Round started: {}", round_number);
+
         Ok(())
     }
 
     pub fn end_round(ctx: Context<EndRound>) -> Result<()> {
         let vault_data = &mut ctx.accounts.vault_data;
         require!(vault_data.owner == *ctx.accounts.admin.key, VaultError::Unauthorized);
-
+        let round_number = 1;
         vault_data.is_running = false;
 
         let vault_balance = ctx.accounts.vault.to_account_info().lamports();
@@ -114,15 +115,15 @@ pub mod trade_fun {
             platform_fee_amount,
         )?;
 
-        msg!("Platform fee of {} lamports sent to admin.", platform_fee_amount);
+        msg!("Round ended: {}", round_number);
         Ok(())
     }
 
     pub fn deposit_sol(ctx: Context<DepositSol>) -> Result<()> {
         let vault_data = &ctx.accounts.vault_data;
         require!(vault_data.is_running, VaultError::LeagueNotRunning);
+        let round_number = 1;
     
-        
     
         let transfer_instruction = Transfer {
             from: ctx.accounts.user.to_account_info(),
@@ -135,15 +136,11 @@ pub mod trade_fun {
         )?;
 
         msg!(
-            "Emitting DepositEvent: user={}, timestamp={}",
+            "User participated: user={} round={}",
             ctx.accounts.user.key(),
-            Clock::get()?.unix_timestamp
+            round_number,
         );
     
-        emit!(DepositEvent {
-            user: ctx.accounts.user.key(),
-            timestamp: Clock::get()?.unix_timestamp,
-        });
     
     
         Ok(())
@@ -179,6 +176,7 @@ pub mod trade_fun {
                 reward_amount,
             )?;
         }
+        msg!("SOL distributed to on Round 1");
 
         Ok(())
     }
