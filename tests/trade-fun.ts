@@ -63,7 +63,11 @@ before(async () => {
   console.log("✅ Admin Initialized!");
 
   console.log("📌 Initializing Vault...");
-  const rewardRatios = [new anchor.BN(40), new anchor.BN(30), new anchor.BN(25)];
+  const rewardRatios = [
+    new anchor.BN(40),
+    new anchor.BN(30),
+    new anchor.BN(25),
+  ];
   const platformFee = new anchor.BN(PLATFORM_FEE * 100);
 
   await program.methods
@@ -82,7 +86,11 @@ before(async () => {
 
 it("Admin updates vault settings", async () => {
   console.log("📌 Updating Vault Settings...");
-  const newRewardRatios = [new anchor.BN(50), new anchor.BN(30), new anchor.BN(15)];
+  const newRewardRatios = [
+    new anchor.BN(50),
+    new anchor.BN(30),
+    new anchor.BN(15),
+  ];
   const newPlatformFee = new anchor.BN(5); // 5%
 
   await program.methods
@@ -104,7 +112,11 @@ it("Admin updates vault settings", async () => {
     [50, 30, 15],
     "Reward ratios should be updated"
   );
-  assert.equal(vaultData.platformFee.toNumber(), 5, "Platform fee should be updated to 5%");
+  assert.equal(
+    vaultData.platformFee.toNumber(),
+    5,
+    "Platform fee should be updated to 5%"
+  );
 });
 
 it("Fails to deposit when the round is not running", async () => {
@@ -126,6 +138,17 @@ it("Fails to deposit when the round is not running", async () => {
   }
 });
 
+it("Verifies the initial round number is zero", async () => {
+  console.log("📌 Checking initial round number...");
+  const vaultData = await program.account.vaultData.fetch(vaultDataPDA);
+  assert.equal(
+    vaultData.currentRound.toNumber(),
+    0,
+    "Initial round should be zero"
+  );
+  console.log("✅ Initial round number verified as zero!");
+});
+
 it("Starts the league round", async () => {
   console.log("📌 Starting the league round...");
   await program.methods
@@ -136,7 +159,17 @@ it("Starts the league round", async () => {
     } as any)
     .rpc();
 
-  console.log("✅ League round started!");
+  const vaultData = await program.account.vaultData.fetch(vaultDataPDA);
+  assert.equal(
+    vaultData.currentRound.toNumber(),
+    1,
+    "Round number should be 1 after starting"
+  );
+  assert.isTrue(vaultData.isRunning, "Round should be running");
+  console.log(
+    "✅ League round started with round number:",
+    vaultData.currentRound.toNumber()
+  );
 });
 
 it("User deposits 0.1 SOL into the vault when round is active", async () => {
@@ -159,8 +192,11 @@ it("Emits a DepositEvent when user deposits SOL", async () => {
 
   const listener = program.addEventListener("depositEvent", (event, slot) => {
     console.log("✅ DepositEvent detected:", event);
-    assert.equal(event.user.toString(), user.publicKey.toString(), "User should match");
-    
+    assert.equal(
+      event.user.toString(),
+      user.publicKey.toString(),
+      "User should match"
+    );
   });
 
   const tx = await program.methods
@@ -194,11 +230,45 @@ it("Ends the league round and transfers platform fee", async () => {
     } as any)
     .rpc();
 
+  const vaultData = await program.account.vaultData.fetch(vaultDataPDA);
+  assert.equal(
+    vaultData.currentRound.toNumber(),
+    1,
+    "Round number should still be 1 after ending"
+  );
+  assert.isFalse(vaultData.isRunning, "Round should not be running");
   console.log("✅ Platform fee transferred to admin!");
 });
 
+it("Starts a second round and verifies round number increments", async () => {
+  console.log("📌 Starting second round...");
+  await program.methods
+    .startRound()
+    .accounts({
+      admin: admin.publicKey,
+      vaultData: vaultDataPDA,
+    } as any)
+    .rpc();
+
+  const vaultData = await program.account.vaultData.fetch(vaultDataPDA);
+  assert.equal(
+    vaultData.currentRound.toNumber(),
+    2,
+    "Round number should be 2 for the second round"
+  );
+  assert.isTrue(vaultData.isRunning, "Round should be running");
+  console.log(
+    "✅ Second round started with round number:",
+    vaultData.currentRound.toNumber()
+  );
+});
+
 it("Distributes remaining SOL to dynamically selected recipients based on preset ratios", async () => {
-  const recipients = [recipient1.publicKey, recipient2.publicKey, recipient3.publicKey];
+  const recipients = [
+    recipient1.publicKey,
+    recipient2.publicKey,
+    recipient3.publicKey,
+  ];
 
   console.log("📌 Distributing SOL...");
   await program.methods

@@ -47,6 +47,7 @@ pub mod trade_fun {
         vault_data.reward_ratios = reward_ratios;
         vault_data.platform_fee = platform_fee;
         vault_data.is_running = false;
+        vault_data.current_round = 0;
 
         Ok(())
     }
@@ -83,9 +84,12 @@ pub mod trade_fun {
     pub fn start_round(ctx: Context<ManageRound>) -> Result<()> {
         let vault_data = &mut ctx.accounts.vault_data;
         require!(vault_data.owner == *ctx.accounts.admin.key, VaultError::Unauthorized);
-        let round_number = 1;
+        require!(!vault_data.is_running, VaultError::RoundAlreadyRunning);
+        
+        vault_data.current_round += 1;
         vault_data.is_running = true;
-        msg!("Round started: {}", round_number);
+        
+        msg!("Round started: {}", vault_data.current_round);
 
         Ok(())
     }
@@ -93,7 +97,8 @@ pub mod trade_fun {
     pub fn end_round(ctx: Context<EndRound>) -> Result<()> {
         let vault_data = &mut ctx.accounts.vault_data;
         require!(vault_data.owner == *ctx.accounts.admin.key, VaultError::Unauthorized);
-        let round_number = 1;
+        require!(vault_data.is_running, VaultError::RoundNotRunning);
+        
         vault_data.is_running = false;
 
         let vault_balance = ctx.accounts.vault.to_account_info().lamports();
@@ -115,21 +120,19 @@ pub mod trade_fun {
             platform_fee_amount,
         )?;
 
-        msg!("Round ended: {}", round_number);
+        msg!("Round ended: {}", vault_data.current_round);
         Ok(())
     }
 
     pub fn deposit_sol(ctx: Context<DepositSol>) -> Result<()> {
         let vault_data = &ctx.accounts.vault_data;
         require!(vault_data.is_running, VaultError::LeagueNotRunning);
-        let round_number = 1;
-    
-    
+        
         let transfer_instruction = Transfer {
             from: ctx.accounts.user.to_account_info(),
             to: ctx.accounts.vault.to_account_info(),
         };
-    
+
         transfer(
             CpiContext::new(ctx.accounts.system_program.to_account_info(), transfer_instruction),
             100_000_000
@@ -138,11 +141,9 @@ pub mod trade_fun {
         msg!(
             "User participated: user={} round={}",
             ctx.accounts.user.key(),
-            round_number,
+            vault_data.current_round,
         );
-    
-    
-    
+
         Ok(())
     }
 
@@ -176,7 +177,7 @@ pub mod trade_fun {
                 reward_amount,
             )?;
         }
-        msg!("SOL distributed to on Round 1");
+        msg!("SOL distributed for Round {}", vault_data.current_round);
 
         Ok(())
     }
@@ -194,6 +195,7 @@ pub struct VaultData {
     pub reward_ratios: Vec<u64>,
     pub platform_fee: u64,
     pub is_running: bool,
+    pub current_round: u64,
 }
 
 /// Error definitions
@@ -209,6 +211,10 @@ pub enum VaultError {
     MismatchedRecipients,
     #[msg("Deposits are only allowed when the league is running.")]
     LeagueNotRunning,
+    #[msg("A round is already running. End the current round before starting a new one.")]
+    RoundAlreadyRunning,
+    #[msg("No round is currently running.")]
+    RoundNotRunning,
 }
 
 #[derive(Accounts)]
@@ -252,7 +258,7 @@ pub struct InitializeVault<'info> {
     #[account(
         init,
         payer = admin,
-        space = 8 + 32 + (8 * 10) + 8 + 1,
+        space = 8 + 32 + (8 * 10) + 8 + 1 + 8,
         seeds = [b"vault_data"],
         bump
     )]
