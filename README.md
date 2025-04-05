@@ -1,195 +1,210 @@
-# 🏆 Trade.fun
+# Trade.fun - On-Chain Trading Competition Platform
 
-## 🚀 What is Trade.fun?
+![Trade.fun Architecture](doc/diagram.jpeg)
 
-Trade.fun is an **influencer-driven trading game** built on **Solana Virtual Machine (SVM)**, designed to make trading competitions more **transparent, engaging, and rewarding**. Whether you're a seasoned trader or just starting out, **Trade.fun** offers an exciting way to showcase your skills, earn rewards, and build a trading community.
+Trade.fun is a Solana-based trading competition platform that enables users to compete for ZBTC rewards without risking their principal investment.
 
-## 🌟 Current Features
+## Platform Overview
 
-### Core Trading System
+Trade.fun offers a secure trading environment where participants:
 
-- SOL to INF token swapping via Jupiter DEX
-- Round-based trading competitions with on-chain verification
-- Yield delivered in ZBTC tokens via LST in Sanctum
-- No-risk participation: only yield is distributed, principal remains safe
+1. Deposit SOL to join trading rounds
+2. Compete using INF tokens (principal stays secure)
+3. Win ZBTC rewards based on trading performance
+4. Redeem the principle on round end
 
-### Platform Architecture
+## Core Technical Architecture
 
-<div align="center">
-  <img src="doc/diagram.jpeg" alt="Trade.fun Platform Architecture" width="70%">
-</div>
+- Built native Solana program using Rust and Anchor framework
+- Implemented on-chain state management with secure account structures
+- Utilized SPL tokens for handling zBTC and SOL interactions
 
-### Key Components
+## Smart Contract Implementation
 
-| Component          | Function                                                     |
-| ------------------ | ------------------------------------------------------------ |
-| **Participants**   | Deposit SOL to join trading rounds and compete for rewards   |
-| **Trading Rounds** | Time-bound competitions with real-time price tracking        |
-| **Vault System**   | Securely stores principal and generates interest for rewards |
+- Developed instructions for SOL deposits and reward distribution
+- Created PDAs for secure vault management
+- Used Solana's atomic transaction model for safe SOL-to-INF conversions
 
-### Technology Stack
+## Vault Mechanism
 
-- **Token System**: INF (interest), WSOL (deposits), ZBTC (rewards), Chip(game chip)
-- **Price Oracle**: Pyth integration for fair market pricing
-- **Smart Contracts**: Anchor framework on Solana
+The platform uses a sophisticated vault system with two components:
 
-## 🔮 Future Roadmap
+- **Principal INF**: Users' initial deposits, always protected
+- **Interest INF**: Yield generated from deposits, distributed as rewards
 
-### Phase 1: Social Trading
+When users deposit SOL:
 
-- Copy trading from top performers (KOLs)
-- Influencer-managed trading DAOs
-- Tokenized trading influence
+1. SOL is converted to INF tokens via Jupiter DEX
+2. The initial exchange rate is recorded in PDAs
+3. Principal amount is locked in the vault
+4. Only generated interest is distributed to winners
 
-### Phase 2: Advanced Features
+## Exchange Rate Tracking & Yield Calculation
 
-- AI trading agents and human vs AI competitions
-- DAO vs DAO trading battles
-- Custom strategy development platform
+- PDAs store initial exchange rate at deposit time
+- Smart contract calculates real-time rate changes using Pyth
+- If INF/SOL rate increases by 10%, principle becomes 90% of total INF
+- Yield is the difference between current and principal INF amounts
 
-### Phase 3: Real-World Utility
+## Platform Flow (as shown in diagram)
 
-- Banana Pay integration for fiat onboarding
-- Direct reward distribution to payment cards
-- Complete financial loop: fiat → yield → spending
+1. **Participants** deposit SOL through the platform
+2. SOL is converted to INF tokens and stored in the **Vault**
+3. Participants join **Rounds** using CHIP tokens
+4. Winners receive rewards from the interest generated
+5. Users can redeem their principal at any time
 
-## 🔧 Technical Implementation
+## Reward Token Implementation
 
-### Principal and Interest Calculation
+- Deployed "CHIP" token for platform participation
+- Users receive CHIP tokens proportional to SOL deposits
+- CHIP tokens enable participation in special rounds
 
-Trade.fun employs a sophisticated mechanism to protect principal while distributing only interest as rewards. This is how the system works:
+## Technical Integrations
 
-#### How It Works:
+### Jupiter Integration
 
-1. **Deposit**: Users swap SOL for INF tokens via Jupiter DEX
+- Used Jupiter's aggregator for optimal token swaps
+- Integrated CPI for SOL-to-INF conversions
 
-   - `initial_inf_price = total_inf_received / total_sol_deposited`
+### Pyth Oracle Integration
 
-2. **Principal Protection**: Principal value is calculated and preserved
+- Used for real-time INF/SOL and USD price data
+- Implemented safety mechanisms to verify price feed accuracy
 
-   - `principal_inf = total_inf * 100 / (100 + price_increase)`
+### Token Management
 
-3. **Yield Calculation**: Interest is determined from INF price appreciation
+- Secure token transfers via SPL token program
+- Token vaults controlled by program PDAs
+- Trustless minting/burning operations for CHIP tokens
 
-   - `price_increase = (current_inf_sol_price - initial_inf_price) * 100 / initial_inf_price`
-   - `interest_inf = total_inf - principal_inf`
+## Current Features
 
-4. **Reward Distribution**: Winners receive interest_inf
-   - `reward_amount = interest_inf * round_participated_chips / total_minted_chips`
+Our yield-based trading model lets users earn ZBTC rewards via LST in Sanctum without risking their principal investment. The platform provides:
 
-This system ensures that:
+- Real-time trading competitions
+- Secure vault management
+- On-chain verification of all transactions
+- Transparent reward distribution
 
-- Principal remains safe and can be redeemed by depositors
-- Only yield generated during the competition is distributed as rewards
-- Participants can compete without risking their deposited capital
+## Future Roadmap
 
-## 🛠 Getting Started
+We're expanding the platform with exciting new features:
+
+1. **DAO vs DAO Competitions**: Creating new social dynamics in trading
+2. **Copy Trading**: Connecting influencers with followers
+3. **AI vs Human Battles**: Pushing strategic boundaries in trading
+4. **Streamlined UX via Banana Pay**: Making sophisticated trading accessible to everyone
+
+All while maintaining full on-chain transparency and security.
+
+## CLI Usage Guide
+
+The Trade.fun platform provides a set of CLI scripts to interact with the deployed smart contract. These scripts allow you to manage the entire lifecycle of trading rounds and user interactions.
 
 ### Prerequisites
 
-- Node.js (v23+) and pnpm installed
-- Solana CLI tools (v1.14+)
-- A Solana wallet with SOL for deployment and testing
+1. Create a `.env` file with your configuration:
 
-### Installation
-
-```sh
-# Clone the repository
-git clone https://github.com/yourusername/trade-fun.git
-cd trade-fun
-
-# Install dependencies
-pnpm install
-
-# Build the program
-anchor build
+```
+RPC_URL=https://api.mainnet-beta.solana.com
+KEYPAIR=your_base58_encoded_private_key
 ```
 
-### Environment Setup
+2. Install dependencies:
 
-1. Copy the example environment file:
-
-   ```sh
-   cp .env.example .env
-   ```
-
-2. Update the `.env` file with your own wallet keypair path and Solana cluster:
-
-   ```
-   RPC_URL=https://api.mainnet-beta.solana.com
-   KEYPAIR=your_string_private_key
-   ```
-
-### Quick Setup: TypeScript CLI Scripts
-
-<table>
-<tr>
-<td>
-
-#### Initial Setup
-
-```sh
-# Install dependencies
-npm install @solana/web3.js @coral-xyz/anchor ts-node
-
-# Initialize admin
-ts-node cli/initializeAdmin.ts
-
-# Initialize the vault
-ts-node cli/initializeVault.ts
+```bash
+npm install
 ```
 
-</td>
-<td>
+### Available Commands
 
-#### Running a Competition
+Each script is designed to interact with a specific contract functionality:
 
-```sh
-# Start a trading round
-ts-node scripts/startRound.ts
+#### 1. Deposit SOL
 
-# Deposit SOL and participate
-ts-node scripts/depositSol.ts
+Deposits SOL into the platform, converting it to INF tokens and storing them in the vault.
 
-# End round and distribute rewards
-ts-node scripts/endRound.ts
-ts-node scripts/distributeZ.ts
+```bash
+npx ts-node cli/deposit.ts <amount_in_sol> <round_number>
 ```
 
-</td>
-</tr>
-</table>
+#### 2. Initialize a New Trading Round
 
-### Testing
+Creates a new trading round with specified parameters.
 
-```sh
-# Run the test suite
-anchor test
-
-# Run specific tests
-anchor test -- -t "should initialize vault"
+```bash
+npx ts-node cli/initializeRound.ts <round_number> <start_timestamp> <end_timestamp>
 ```
 
-### Deployment
+#### 3. Start a Trading Round
 
-For local development:
+Activates a previously initialized round.
 
-```sh
-# Start a local validator
-solana-test-validator
-
-# Deploy to localnet
-anchor deploy
+```bash
+npx ts-node cli/startRound.ts <round_number>
 ```
 
-For testnet/mainnet:
+#### 4. Participate in a Round
 
-```sh
-# Deploy to devnet
-anchor deploy --provider.cluster devnet
+Allows a user to join an active trading round.
 
-# Deploy to mainnet
-anchor deploy --provider.cluster mainnet-beta
+```bash
+npx ts-node cli/participateRound.ts <round_number>
 ```
 
----
+#### 5. Close a Trading Round
+
+Finalizes a round after its end time has passed.
+
+```bash
+npx ts-node cli/closeRound.ts <round_number>
+```
+
+#### 6. Distribute Rewards
+
+Distributes earned interest to round winners.
+
+```bash
+npx ts-node cli/distributeReward.ts <round_number>
+```
+
+#### 7. Distribute ZBTC Rewards
+
+Distributes ZBTC rewards to round winners.
+
+```bash
+npx ts-node cli/distributeZbtcReward.ts <round_number>
+```
+
+#### 8. Redeem Principal
+
+Allows users to withdraw their principal from the vault.
+
+```bash
+npx ts-node cli/redeem.ts
+```
+
+### Monitoring Tools
+
+The platform also includes tools to check the status of rounds and reward balances:
+
+```bash
+# Check status of all rounds
+npx ts-node cli/check_rounds.ts
+
+# Check reward balance
+npx ts-node cli/check_reward_balance.ts
+```
+
+### Example Workflow
+
+A typical workflow for managing a trading round:
+
+1. Initialize a new round
+2. Users deposit SOL to join
+3. Start the round at the scheduled time
+4. Users participate in trading
+5. Close the round after end time
+6. Distribute rewards to winners
+7. Users can redeem their principal
