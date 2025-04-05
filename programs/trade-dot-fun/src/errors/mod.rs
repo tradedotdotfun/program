@@ -46,4 +46,6 @@ pub enum RoundError {
     InvalidTokenAccount,
     #[msg("Unauthorized user for this operation")]
     UnauthorizedUser,
+    #[msg("Insufficient funds for this operation")]
+    InsufficientFunds,
 } 

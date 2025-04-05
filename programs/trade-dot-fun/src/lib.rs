@@ -19,6 +19,7 @@ pub mod trade_dot_fun {
     use crate::instructions::close_round::CloseRound;
     use crate::instructions::participate_round::ParticipateRound;
     use crate::instructions::distribute_reward::DistributeReward;
+    use crate::instructions::distribute_zbtc_reward::DistributeZbtcReward;
     use crate::instructions::initialize_vault_data::InitializeVaultData;
     use crate::instructions::initialize_user_data::InitializeUserData;
 
@@ -55,6 +56,22 @@ pub mod trade_dot_fun {
         winner_ratios: Vec<u64>,
     ) -> Result<()> {
         instructions::distribute_reward::distribute_reward(ctx, round_number, winner_addresses, winner_ratios)
+    }
+
+    pub fn distribute_zbtc_reward<'info>(
+        ctx: Context<'_, '_, '_, 'info, DistributeZbtcReward<'info>>, 
+        round_number: u64,
+        winner_addresses: Vec<Pubkey>,
+        winner_ratios: Vec<u64>,
+        jupiter_swap_data: Vec<u8>,
+    ) -> Result<()> {
+        instructions::distribute_zbtc_reward::distribute_zbtc_reward(
+            ctx, 
+            round_number, 
+            winner_addresses, 
+            winner_ratios,
+            jupiter_swap_data
+        )
     }
 
     pub fn initialize_vault_data(ctx: Context<InitializeVaultData>) -> Result<()> {

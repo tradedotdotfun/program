@@ -14,6 +14,10 @@ pub fn reward_token_mint() -> Pubkey {
     Pubkey::from_str("chip6YRCCXMy1uLbGRNErT66aYGdaVsVCQ25VA1LWNN").unwrap()
 }
 
+pub fn zbtc_mint() -> Pubkey {
+    Pubkey::from_str("93a1L7xaEV7vZGt3jNMSQCgGjQx5WFYSm4CrS2s4KBcL").unwrap()
+}
+
 // Add constant for stake ratio (0.001 SOL = 1 reward token)
 pub const STAKE_RATIO: u64 = 1_000_000; // 0.001 SOL in lamports
 

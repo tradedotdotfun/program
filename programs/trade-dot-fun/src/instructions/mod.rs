@@ -5,6 +5,7 @@ pub mod start_round;
 pub mod close_round;
 pub mod participate_round;
 pub mod distribute_reward;
+pub mod distribute_zbtc_reward;
 pub mod initialize_vault_data;
 pub mod initialize_user_data; 
 
@@ -15,5 +16,6 @@ pub use start_round::*;
 pub use close_round::*;
 pub use participate_round::*;
 pub use distribute_reward::*;
+pub use distribute_zbtc_reward::*;
 pub use initialize_vault_data::*;
 pub use initialize_user_data::*;
