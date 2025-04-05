@@ -124,13 +124,13 @@ const closeRound = async (roundNumber: number): Promise<string> => {
 async function main() {
   const args = process.argv.slice(2);
 
-  if (args.length < 2 || args[0] !== "close") {
+  if (args.length < 1) {
     console.log("Usage:");
-    console.log("  ts-node closeRound.ts close <round_number>");
+    console.log("  npx ts-node cli/closeRound.ts <round_number>");
     process.exit(1);
   }
 
-  const roundNumber = parseInt(args[1]);
+  const roundNumber = parseInt(args[0]);
   if (isNaN(roundNumber)) {
     console.error("Invalid round number. Please provide a valid number.");
     process.exit(1);

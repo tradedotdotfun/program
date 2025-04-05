@@ -1,8 +1,13 @@
-# Trade.fun - On-Chain Trading Competition Platform
+# 🏆 Trade.fun 🏆 - The ultimate degen perp trading game
+
+Trade.fun is the ultimate on-chain trading competition platform where users can stake their yield from Solana LSTs and earn ZBTC rewards without risking their principal.
+We've built a transparent, verifiable system where trading performance is recorded on-chain, eliminating trust issues common in traditional trading competitions.
+
+What sets us apart is our vision for the future: influencers creating trading DAOs where followers can copy successful strategies, exciting DAO vs DAO battles that create community-driven competition, and even the ability to test your skills against AI trading agents. With our streamlined UX powered by Banana Pay, we've made sophisticated trading accessible to everyone.
+
+Trade.fun isn't just about making profits—it's about building reputation, showcasing skills, and participating in a revolutionary trading ecosystem that brings the excitement of competition to DeFi.
 
 ![Trade.fun Architecture](doc/diagram.jpeg)
-
-Trade.fun is a Solana-based trading competition platform that enables users to compete for ZBTC rewards without risking their principal investment.
 
 ## Platform Overview
 

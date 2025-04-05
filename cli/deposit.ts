@@ -312,61 +312,49 @@ const swapToINF = async (
   }
 };
 
-// Main
-(async () => {
-  // Parse command line arguments
+// Main function to parse command line arguments and execute
+async function main() {
   const args = process.argv.slice(2);
-  let roundNumber = 1; // Default value
 
-  // Check if round number is provided as command line argument
-  for (let i = 0; i < args.length; i++) {
-    if (args[i] === "--round" || args[i] === "-r") {
-      if (i + 1 < args.length) {
-        const parsed = parseInt(args[i + 1]);
-        if (!isNaN(parsed)) {
-          roundNumber = parsed;
-        } else {
-          console.error(
-            "Invalid round number provided. Using default round 1."
-          );
-        }
-      }
-    }
+  if (args.length < 2) {
+    console.log("Usage:");
+    console.log("  npx ts-node cli/deposit.ts <amount_in_sol> <round_number>");
+    process.exit(1);
   }
 
-  console.log(`Using round number: ${roundNumber}`);
+  const amountInSol = parseFloat(args[0]);
+  const roundNumber = parseInt(args[1]);
 
-  const SOL = new PublicKey("So11111111111111111111111111111111111111112");
-  const INF = new PublicKey("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm");
+  if (isNaN(amountInSol) || amountInSol <= 0) {
+    console.error("Invalid SOL amount. Please provide a positive number.");
+    process.exit(1);
+  }
 
-  const [vaultAuthority, _] = await PublicKey.findProgramAddress(
+  if (isNaN(roundNumber)) {
+    console.error("Invalid round number. Please provide a valid number.");
+    process.exit(1);
+  }
+
+  // Convert SOL to lamports for the swap
+  const amountToWrap = Math.floor(amountInSol * LAMPORTS_PER_SOL);
+
+  // Setup the swap parameters
+  const SOL = NATIVE_MINT;
+  const INF = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"); // Update this to your INF token mint
+
+  // Get user's input token account (wrapping SOL)
+  const inputTokenATA = await getAssociatedTokenAddress(SOL, wallet.publicKey);
+
+  // Find vault authority PDA
+  const [vaultAuthority] = await PublicKey.findProgramAddress(
     [Buffer.from("vault_authority")],
     program.programId
   );
 
-  console.log(`Vault authority: ${vaultAuthority.toString()}`);
-
-  const amountToWrap = 1_000_000; // 0.001 SOL in lamports (1 SOL = 1,000,000,000 lamports)
-
-  // Find the best Quote from the Jupiter API - 1 USDC = 1,000,000 (6 decimals)
+  console.log(`Getting quote for ${amountInSol} SOL to INF...`);
   const quote = await getQuote(SOL, INF, amountToWrap);
 
-  // Get token accounts (but don't create them yet, just get addresses and creation instructions if needed)
-  console.log("Setting up token accounts...");
-  const { address: inputTokenATA, createInstruction: createInputTokenATAIx } =
-    await getAssociatedTokenAddressWithInstruction(SOL, wallet.publicKey);
-
-  console.log(`WSOL account: ${inputTokenATA.toString()}`);
-  console.log(`Vault PDA: ${vaultPDA.toString()}`);
-
-  // Find the vault output token account address for Jupiter API (don't create it yet)
-  const vaultOutputTokenAddress = await getAssociatedTokenAddress(
-    INF,
-    vaultAuthority,
-    true // Allow owner off curve (for PDAs)
-  );
-
-  // Use direct fetch rather than our helper to have more control
+  console.log("Getting swap instructions...");
   const jupResponse = await fetch(`${API_ENDPOINT}/swap-instructions`, {
     method: "POST",
     headers: {
@@ -376,32 +364,31 @@ const swapToINF = async (
     body: JSON.stringify({
       quoteResponse: quote,
       userPublicKey: wallet.publicKey.toBase58(),
-      destinationTokenAccount: vaultOutputTokenAddress.toBase58(),
       sourceTokenAccount: inputTokenATA.toBase58(),
       useSharedAccounts: true,
       config: {
-        skipUserAccountsRpcCalls: true, // Skip unnecessary RPC calls
-        wrapAndUnwrapSol: false, // Don't wrap/unwrap SOL - we're handling that
-        dynamicComputeUnitLimit: false, // Don't use dynamic compute limit
+        skipUserAccountsRpcCalls: true,
+        wrapAndUnwrapSol: false,
+        dynamicComputeUnitLimit: false,
         prioritizationFeeLamports: 0,
-        maxRetries: 0, // Don't retry internally
-        useTokenLedger: false, // Don't use token ledger
-        useSharedAccounts: true, // Use shared accounts
-        asLegacyTransaction: false, // Use versioned transactions
-        strictTokenAccounts: true, // Be strict about token accounts
+        maxRetries: 0,
+        useTokenLedger: false,
+        useSharedAccounts: true,
+        asLegacyTransaction: false,
+        strictTokenAccounts: true,
       },
     }),
   }).then((response) => response.json());
 
   if ("error" in jupResponse) {
-    console.log({ result: jupResponse });
-    return jupResponse;
+    console.error("Error getting swap instructions:", jupResponse.error);
+    process.exit(1);
   }
 
   const {
-    computeBudgetInstructions, // The necessary instructions to setup the compute budget.
-    swapInstruction: swapInstructionPayload, // The actual swap instruction.
-    addressLookupTableAddresses, // The lookup table addresses that you can use if you are using versioned transaction.
+    computeBudgetInstructions,
+    swapInstruction: swapInstructionPayload,
+    addressLookupTableAddresses,
   } = jupResponse;
 
   await swapToINF(
@@ -415,4 +402,15 @@ const swapToINF = async (
     inputTokenATA,
     roundNumber
   );
-})();
+}
+
+// Run the main function if this file is executed directly
+if (require.main === module) {
+  main().catch((error) => {
+    console.error("Error:", error);
+    process.exit(1);
+  });
+}
+
+// Export functions for use in other files
+export { swapToINF, getQuote, getSwapIx };

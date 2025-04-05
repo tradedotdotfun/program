@@ -192,28 +192,13 @@ async function main() {
   const SOL = new PublicKey("So11111111111111111111111111111111111111112");
   const INF = new PublicKey("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm");
 
-  const command = process.argv[2];
+  // According to README, no arguments are needed for redeem command
+  console.log("Redeeming tokens...");
 
-  if (!command) {
-    console.log("Usage:");
-    console.log("  ts-node redeem.ts redeem [token_mint]");
-    process.exit(1);
-  }
+  // Default to INF token
+  const tokenMint = INF;
 
-  if (command === "redeem") {
-    // Default to INF token if not specified
-    let tokenMint = INF;
-    if (process.argv[3]) {
-      tokenMint = new PublicKey(process.argv[3]);
-    }
-
-    await redeemTokens(tokenMint);
-  } else {
-    console.error(`Unknown command: ${command}`);
-    console.log("Usage:");
-    console.log("  ts-node redeem.ts redeem [token_mint]");
-    process.exit(1);
-  }
+  await redeemTokens(tokenMint);
 }
 
 // Run the main function if this file is executed directly

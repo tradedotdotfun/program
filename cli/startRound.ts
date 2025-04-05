@@ -139,15 +139,15 @@ const startRound = async (roundNumber: number): Promise<string> => {
 
 // Main function to parse command line arguments and execute the appropriate function
 async function main() {
-  const command = process.argv[2];
+  const args = process.argv.slice(2);
 
-  if (!command || command !== "start") {
+  if (args.length < 1) {
     console.log("Usage:");
-    console.log("  ts-node startRound.ts start <round_number>");
+    console.log("  npx ts-node cli/startRound.ts <round_number>");
     process.exit(1);
   }
 
-  const roundNumber = parseInt(process.argv[3]);
+  const roundNumber = parseInt(args[0]);
 
   if (isNaN(roundNumber)) {
     console.error("Invalid round number. Please provide a valid number.");

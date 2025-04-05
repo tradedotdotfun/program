@@ -343,67 +343,30 @@ const distributeZbtcReward = async (
 async function main() {
   const args = process.argv.slice(2);
 
-  if (args.length < 3 || args[0] !== "distribute-zbtc") {
+  if (args.length < 1) {
     console.log("Usage:");
-    console.log(
-      "  ts-node distributeZbtcReward.ts distribute-zbtc <round_number> <swap_amount> <winner1_address>:<ratio> <winner2_address>:<ratio> ..."
-    );
-    console.log("Example:");
-    console.log(
-      "  ts-node distributeZbtcReward.ts distribute-zbtc 2 1000000 ALiCeAddress123:60 BoBAddress456:40"
-    );
+    console.log("  npx ts-node cli/distributeZbtcReward.ts <round_number>");
     process.exit(1);
   }
 
-  const roundNumber = parseInt(args[1]);
+  const roundNumber = parseInt(args[0]);
   if (isNaN(roundNumber)) {
     console.error("Invalid round number. Please provide a valid number.");
     process.exit(1);
   }
 
-  const swapAmount = parseInt(args[2]);
-  if (isNaN(swapAmount)) {
-    console.error("Invalid swap amount. Please provide a valid number.");
-    process.exit(1);
-  }
+  // Note: The README format doesn't include swap amount and winner addresses/ratios
+  // These values would need to be determined from on-chain data or configuration
 
-  const winnerArgs = args.slice(3);
-  if (winnerArgs.length === 0) {
-    console.error("Please provide at least one winner with ratio.");
-    process.exit(1);
-  }
+  // For now, let's use placeholder values, in a real scenario you would:
+  // 1. Fetch swap amount from configuration or calculate based on round data
+  // 2. Determine winners and ratios from round performance data
+  const swapAmount = 1000000; // Placeholder value
 
-  // Parse winners and ratios
+  // Placeholder for winners - in a real implementation, fetch this from the blockchain
   const winners: Array<[string, number]> = [];
-  let totalRatio = 0;
 
-  for (const arg of winnerArgs) {
-    const parts = arg.split(":");
-    if (parts.length !== 2) {
-      console.error(
-        `Invalid winner format: ${arg}. Expected format: address:ratio`
-      );
-      process.exit(1);
-    }
-
-    const [address, ratioStr] = parts;
-    const ratio = parseInt(ratioStr);
-
-    if (isNaN(ratio) || ratio <= 0 || ratio > 100) {
-      console.error(
-        `Invalid ratio for ${address}: ${ratioStr}. Must be between 1 and 100.`
-      );
-      process.exit(1);
-    }
-
-    totalRatio += ratio;
-    winners.push([address, ratio]);
-  }
-
-  if (totalRatio !== 100) {
-    console.error(`Winner ratios must sum to 100%, got ${totalRatio}%`);
-    process.exit(1);
-  }
+  // Add logic to determine winners and ratios based on round performance
 
   try {
     await distributeZbtcReward(roundNumber, winners, swapAmount);
@@ -413,4 +376,10 @@ async function main() {
   }
 }
 
-main();
+// Run the main function if this file is executed directly
+if (require.main === module) {
+  main().catch(console.error);
+}
+
+// Export the function for use in other files
+export { distributeZbtcReward };

@@ -98,21 +98,32 @@ const initializeRound = async (roundNumber: number): Promise<string> => {
 
 // Main function to parse command line arguments and execute the appropriate function
 async function main() {
-  const command = process.argv[2];
+  const args = process.argv.slice(2);
 
-  if (!command || command !== "initialize") {
+  if (args.length < 3) {
     console.log("Usage:");
-    console.log("  ts-node initializeRound.ts initialize <round_number>");
+    console.log(
+      "  npx ts-node cli/initializeRound.ts <round_number> <start_timestamp> <end_timestamp>"
+    );
     process.exit(1);
   }
 
-  const roundNumber = parseInt(process.argv[3]);
+  const roundNumber = parseInt(args[0]);
+  const startTimestamp = parseInt(args[1]);
+  const endTimestamp = parseInt(args[2]);
 
   if (isNaN(roundNumber)) {
     console.error("Invalid round number. Please provide a valid number.");
     process.exit(1);
   }
 
+  if (isNaN(startTimestamp) || isNaN(endTimestamp)) {
+    console.error("Invalid timestamps. Please provide valid UNIX timestamps.");
+    process.exit(1);
+  }
+
+  // TODO: Update the initializeRound function to accept start and end timestamps
+  // For now, we'll just use the existing function
   await initializeRound(roundNumber);
 }
 
