@@ -30,24 +30,33 @@ Trade.fun offers a secure trading environment where participants:
 
 ## Vault Mechanism
 
-The platform uses a sophisticated vault system with two components:
+The platform employs a mathematically rigorous vault system with two fundamental components:
 
-- **Principal INF**: Users' initial deposits, always protected
-- **Interest INF**: Yield generated from deposits, distributed as rewards
+- **Principal INF (P₀)**: Users' initial deposits, secured and protected throughout
+- **Interest INF (I₁)**: Yield generated from deposits, calculated as I₁ = P₁ - P₀
 
 When users deposit SOL:
 
-1. SOL is converted to INF tokens via Jupiter DEX
-2. The initial exchange rate is recorded in PDAs
-3. Principal amount is locked in the vault
-4. Only generated interest is distributed to winners
+1. SOL is converted to INF tokens via Jupiter DEX: SOL → INF
+2. The initial exchange rate (R₀) is recorded in PDAs where R₀ = INF/SOL at t=0
+3. Principal amount P₀ = INF_initial is locked in the vault
+4. Only generated interest (I₁) is distributed to winners
 
-Exchange Rate Tracking & Yield Calculation
+### Exchange Rate Tracking & Yield Calculation
 
-- PDAs store initial exchange rate at deposit time
-- Smart contract calculates real-time rate changes using Pyth
-  - eg) If INF/SOL rate increases by 10%, principle becomes 90% of total INF
-- Yield is the difference between current and principal INF amounts
+- PDAs store initial exchange rate R₀ at deposit time t=0
+- Smart contract calculates real-time rate changes (Rₜ) using Pyth oracle data
+- At time t, if current exchange rate is Rₜ, then:
+  - Principal value: P₀ = (R₀/Rₜ) × Total_INF
+  - Interest available: I₁ = Total_INF - P₀
+  - Mathematically: I₁ = Total_INF × (1 - R₀/Rₜ)
+
+Example:
+
+- If INF/SOL rate increases by 10% (Rₜ = 1.1 × R₀), then:
+  - P₀ = Total_INF × (R₀/Rₜ) = Total_INF × (R₀/(1.1×R₀)) = Total_INF × (1/1.1) ≈ 0.909 × Total_INF
+  - Therefore, principal becomes ~90.9% of total INF
+  - Interest available for distribution: I₁ = Total_INF - P₀ ≈ 0.091 × Total_INF (9.1% of total)
 
 ## Platform Flow (as shown in diagram)
 
