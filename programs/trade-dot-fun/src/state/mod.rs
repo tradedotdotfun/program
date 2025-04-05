@@ -32,6 +32,7 @@ pub struct VaultData {
     pub current_round: u64,
     pub exchange_rate: u64,  // Latest INF/SOL exchange rate (scaled by 10^6)
     pub last_price_update: i64,  // Timestamp of last price update
+    pub is_round_active: bool,
 }
 
 #[account]

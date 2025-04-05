@@ -2,6 +2,8 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum RedeemError {
+    #[msg("Round shouldn't be active")]
+    RoundActive,
     #[msg("The vault does not have enough tokens to fulfill this redemption")]
     InsufficientVaultBalance,
     #[msg("Invalid user account")]

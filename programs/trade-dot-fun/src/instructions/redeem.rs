@@ -69,6 +69,9 @@ pub struct Redeem<'info> {
 }
 
 pub fn redeem(ctx: Context<Redeem>) -> Result<()> {
+    let is_round_active = ctx.accounts.vault_data.is_round_active;
+    require!(!is_round_active, RedeemError::RoundActive);
+
     // Step 1: Verify the vault_authority is the correct PDA
     msg!("Step 1: Verifying vault authority");
     let (vault_authority, bump) = find_vault_authority_pda();
