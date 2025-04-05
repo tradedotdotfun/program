@@ -7,8 +7,6 @@ What sets us apart is our vision for the future: influencers creating trading DA
 
 Trade.fun isn't just about making profits—it's about building reputation, showcasing skills, and participating in a revolutionary trading ecosystem that brings the excitement of competition to DeFi.
 
-![Trade.fun Architecture](doc/diagram.jpeg)
-
 ## Platform Overview
 
 Trade.fun offers a secure trading environment where participants:
@@ -44,26 +42,22 @@ When users deposit SOL:
 3. Principal amount is locked in the vault
 4. Only generated interest is distributed to winners
 
-## Exchange Rate Tracking & Yield Calculation
+Exchange Rate Tracking & Yield Calculation
 
 - PDAs store initial exchange rate at deposit time
 - Smart contract calculates real-time rate changes using Pyth
-- If INF/SOL rate increases by 10%, principle becomes 90% of total INF
+  - eg) If INF/SOL rate increases by 10%, principle becomes 90% of total INF
 - Yield is the difference between current and principal INF amounts
 
 ## Platform Flow (as shown in diagram)
 
+![Trade.fun Architecture](doc/diagram.jpeg)
+
 1. **Participants** deposit SOL through the platform
 2. SOL is converted to INF tokens and stored in the **Vault**
 3. Participants join **Rounds** using CHIP tokens
-4. Winners receive rewards from the interest generated
-5. Users can redeem their principal at any time
-
-## Reward Token Implementation
-
-- Deployed "CHIP" token for platform participation
-- Users receive CHIP tokens proportional to SOL deposits
-- CHIP tokens enable participation in special rounds
+4. Winners receive rewards from the interest generated in the form of zBTC
+5. Users can redeem their principal at any round end
 
 ## Technical Integrations
 
@@ -89,7 +83,6 @@ Our yield-based trading model lets users earn ZBTC rewards via LST in Sanctum wi
 
 - Real-time trading competitions
 - Secure vault management
-- On-chain verification of all transactions
 - Transparent reward distribution
 
 ## Future Roadmap
