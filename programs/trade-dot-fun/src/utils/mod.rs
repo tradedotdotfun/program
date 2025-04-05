@@ -10,7 +10,7 @@ pub fn inf_mint() -> Pubkey {
     Pubkey::from_str("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm").unwrap()
 }
 
-pub fn reward_token_mint() -> Pubkey {
+pub fn chip_token_mint() -> Pubkey {
     Pubkey::from_str("chip6YRCCXMy1uLbGRNErT66aYGdaVsVCQ25VA1LWNN").unwrap()
 }
 

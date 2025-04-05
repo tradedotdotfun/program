@@ -7,7 +7,7 @@ use anchor_spl::token_interface::{Mint, MintTo, TokenAccount, TokenInterface};
 use crate::{
     state::{Round, RoundState, UserData, VaultData},
     errors::{RoundError, SwapError},
-    utils::{find_vault_authority_pda, wsol_mint, inf_mint, reward_token_mint, STAKE_RATIO, jupiter_program_id},
+    utils::{find_vault_authority_pda, wsol_mint, inf_mint, chip_token_mint, STAKE_RATIO, jupiter_program_id},
 };
 
 // Using a dynamic check for Jupiter program instead of direct import
@@ -68,7 +68,7 @@ pub struct UserSwap<'info> {
     // Add reward token accounts
     #[account(
         mut,
-        address = reward_token_mint()
+        address = chip_token_mint()
     )]
     pub reward_mint: InterfaceAccount<'info, Mint>,
 

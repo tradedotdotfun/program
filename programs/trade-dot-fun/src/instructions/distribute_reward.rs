@@ -9,7 +9,7 @@ use pyth_solana_receiver_sdk::price_update::{get_feed_id_from_hex, PriceUpdateV2
 use crate::{
     state::{Round, RoundState, VaultData},
     errors::RoundError,
-    utils::{inf_mint, find_vault_authority_pda, find_round_pda, reward_token_mint, 
+    utils::{inf_mint, find_vault_authority_pda, find_round_pda, chip_token_mint, 
             INF_USD_PRICE_FEED_ID, SOL_USD_PRICE_FEED_ID, MAXIMUM_AGE, check_authorized_admin},
 };
 
@@ -43,7 +43,7 @@ pub struct DistributeReward<'info> {
 
     #[account(
         mut,
-        address = reward_token_mint()
+        address = chip_token_mint()
     )]
     pub reward_mint: InterfaceAccount<'info, Mint>,
 

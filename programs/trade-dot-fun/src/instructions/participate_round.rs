@@ -7,7 +7,7 @@ use anchor_spl::{
 use crate::{
     state::{Round, RoundState},
     errors::RoundError,
-    utils::reward_token_mint,
+    utils::chip_token_mint,
 };
 
 #[derive(Accounts)]
@@ -25,7 +25,7 @@ pub struct ParticipateRound<'info> {
 
     #[account(
         mut,
-        address = reward_token_mint()
+        address = chip_token_mint()
     )]
     pub reward_mint: InterfaceAccount<'info, Mint>,
 

@@ -1,11 +1,5 @@
 # 🏆 Trade.fun
 
-<div align="center">
-  <img src="doc/diagram.jpeg" alt="Trade.fun Platform Diagram" width="100%">
-  <h2>Trade 📈 Compete 🏆 Earn 💰</h2>
-  <p><strong>The Ultimate On-Chain Trading Game on Solana</strong></p>
-</div>
-
 ## 🚀 What is Trade.fun?
 
 Trade.fun is an **influencer-driven trading game** built on **Solana Virtual Machine (SVM)**, designed to make trading competitions more **transparent, engaging, and rewarding**. Whether you're a seasoned trader or just starting out, **Trade.fun** offers an exciting way to showcase your skills, earn rewards, and build a trading community.
@@ -32,14 +26,12 @@ Trade.fun is an **influencer-driven trading game** built on **Solana Virtual Mac
 | **Participants**   | Deposit SOL to join trading rounds and compete for rewards   |
 | **Trading Rounds** | Time-bound competitions with real-time price tracking        |
 | **Vault System**   | Securely stores principal and generates interest for rewards |
-| **Winners**        | Receive ZBTC rewards based on performance metrics            |
 
 ### Technology Stack
 
-- **Token System**: INF (participation), WSOL (deposits), ZBTC (rewards)
+- **Token System**: INF (interest), WSOL (deposits), ZBTC (rewards), Chip(game chip)
 - **Price Oracle**: Pyth integration for fair market pricing
 - **Smart Contracts**: Anchor framework on Solana
-- **Reward Calculation**: Customizable distribution ratios
 
 ## 🔮 Future Roadmap
 
@@ -82,8 +74,8 @@ Trade.fun employs a sophisticated mechanism to protect principal while distribut
    - `price_increase = (current_inf_sol_price - initial_inf_price) * 100 / initial_inf_price`
    - `interest_inf = total_inf - principal_inf`
 
-4. **Reward Distribution**: Winners receive ZBTC converted from yield
-   - `reward_amount = interest_inf * round_participation_tokens / reward_token_supply`
+4. **Reward Distribution**: Winners receive interest_inf
+   - `reward_amount = interest_inf * round_participated_chips / total_minted_chips`
 
 This system ensures that:
 
@@ -141,10 +133,10 @@ anchor build
 npm install @solana/web3.js @coral-xyz/anchor ts-node
 
 # Initialize admin
-ts-node scripts/initializeAdmin.ts
+ts-node cli/initializeAdmin.ts
 
 # Initialize the vault
-ts-node scripts/initializeVault.ts
+ts-node cli/initializeVault.ts
 ```
 
 </td>
@@ -161,7 +153,7 @@ ts-node scripts/depositSol.ts
 
 # End round and distribute rewards
 ts-node scripts/endRound.ts
-ts-node scripts/distributeSol.ts
+ts-node scripts/distributeZ.ts
 ```
 
 </td>
@@ -200,19 +192,4 @@ anchor deploy --provider.cluster devnet
 anchor deploy --provider.cluster mainnet-beta
 ```
 
-### Troubleshooting
-
-- **Insufficient funds error**: Ensure your wallet has enough SOL for transaction fees
-- **Account already exists**: You may need to use a new wallet or reset your local validator
-- **Invalid program id**: Make sure the program ID in `Anchor.toml` matches the one in `declare_id!()`
-
-For more detailed instructions and API documentation, check the [developer docs](https://docs.trade.fun).
-
 ---
-
-<div align="center">
-  <h3>Ready to join the future of trading competitions?</h3>
-  <a href="https://trade.fun">Visit Trade.fun</a> | 
-  <a href="https://twitter.com/tradefun">Twitter</a> | 
-  <a href="https://discord.gg/tradefun">Discord</a>
-</div>
