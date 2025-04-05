@@ -215,3 +215,12 @@ A typical workflow for managing a trading round:
 5. Close the round after end time
 6. Distribute rewards to winners
 7. Users can redeem their principal
+
+## Deployment Information
+
+### Program Deployment
+
+- Deployed on Solana Mainnet
+
+- **Program ID**: `B1ph2kyNtkhscRQ3R1CAwMNM4PbGGvphHTzxR83kRsRc`
+- **CHIP Token ID**: `chip6YRCCXMy1uLbGRNErT66aYGdaVsVCQ25VA1LWNN`
