@@ -44,4 +44,6 @@ pub enum RoundError {
     InvalidRemainingAccounts,
     #[msg("Invalid token account")]
     InvalidTokenAccount,
+    #[msg("Unauthorized user for this operation")]
+    UnauthorizedUser,
 } 

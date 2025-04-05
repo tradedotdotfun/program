@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::{Round, RoundState};
+use crate::{Round, RoundState,  utils::check_authorized_admin};
 
 
 #[derive(Accounts)]
@@ -22,6 +22,9 @@ pub struct InitializeRound<'info> {
 }
 
 pub fn initialize_round(ctx: Context<InitializeRound>, round_number: u64) -> Result<()> {
+    // Check that the authority is the authorized admin
+    check_authorized_admin(&ctx.accounts.authority.key())?;
+    
     let round = &mut ctx.accounts.round;
     
     msg!("Step 1: Initializing round {}", round_number);

@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 use crate::{
     state::{Round, RoundState, VaultData},
     errors::RoundError,
+    utils::check_authorized_admin,
 };
 
 #[derive(Accounts)]
@@ -28,6 +29,9 @@ pub struct StartRound<'info> {
 }
 
 pub fn start_round(ctx: Context<StartRound>, round_number: u64) -> Result<()> {
+    // Check that the authority is the authorized admin
+    check_authorized_admin(&ctx.accounts.authority.key())?;
+    
     let round = &mut ctx.accounts.round;
     let vault_data = &mut ctx.accounts.vault_data;
     require!(

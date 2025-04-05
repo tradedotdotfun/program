@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 use crate::{
     state::{Round, RoundState, VaultData},
     errors::RoundError,
+    utils::check_authorized_admin,
 };
 
 #[derive(Accounts)]
@@ -26,6 +27,9 @@ pub struct CloseRound<'info> {
 }
 
 pub fn close_round(ctx: Context<CloseRound>, round_number: u64) -> Result<()> {
+    // Check that the authority is the authorized admin
+    check_authorized_admin(&ctx.accounts.authority.key())?;
+    
     let round = &mut ctx.accounts.round;
     require!(round.state == RoundState::Started, RoundError::InvalidRoundState);
     round.state = RoundState::Closed;

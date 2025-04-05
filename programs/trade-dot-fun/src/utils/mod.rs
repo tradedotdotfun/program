@@ -27,6 +27,20 @@ pub fn jupiter_program_id() -> Pubkey {
     Pubkey::from_str("JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4").unwrap()
 }
 
+// Authorized pubkey for admin operations
+pub fn authorized_admin() -> Pubkey {
+    Pubkey::from_str("2qKn8e94V8HiemUQJ3vG13zC555TBbxFkmbqgU4tUDXJ").unwrap()
+}
+
+// Helper function to check if a signer is the authorized admin
+pub fn check_authorized_admin(signer: &Pubkey) -> Result<()> {
+    require!(
+        *signer == authorized_admin(),
+        crate::errors::RoundError::UnauthorizedUser
+    );
+    Ok(())
+}
+
 // PDA Finding functions
 pub fn find_vault_authority_pda() -> (Pubkey, u8) {
     Pubkey::find_program_address(&[b"vault_authority"], &crate::ID)

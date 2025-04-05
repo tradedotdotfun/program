@@ -10,7 +10,7 @@ use crate::{
     state::{Round, RoundState, VaultData},
     errors::RoundError,
     utils::{inf_mint, find_vault_authority_pda, find_round_pda, reward_token_mint, 
-            INF_USD_PRICE_FEED_ID, SOL_USD_PRICE_FEED_ID, MAXIMUM_AGE},
+            INF_USD_PRICE_FEED_ID, SOL_USD_PRICE_FEED_ID, MAXIMUM_AGE, check_authorized_admin},
 };
 
 #[derive(Accounts)]
@@ -80,6 +80,9 @@ pub fn distribute_reward<'info>(
     winner_addresses: Vec<Pubkey>,
     winner_ratios: Vec<u64>,
 ) -> Result<()> {
+    // Check that the authority is the authorized admin
+    check_authorized_admin(&ctx.accounts.authority.key())?;
+    
     // Verify round is active
     require!(
         ctx.accounts.round.state == RoundState::Closed,
